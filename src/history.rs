@@ -67,18 +67,15 @@ impl Shell {
     /// default shell.
     pub fn read_last_history_command(&self, base_dir: PathBuf) -> String {
         let lines = self.read_history_file(base_dir);
+
         // Get the penultimate line because we would otherwise retrieve the current
         // command (crow add:last).
         let last_command = &lines[lines.len() - 2];
 
         // Because we might encounter a .zsh_history we need to make sure that we remove
         // timestamps in front of the actual command.
-        let re = Regex::new(r": [0-9]*:[0-9];").unwrap_or_else(|e| {
-            eject(&format!("Invalid regular expression! {}", e));
-        });
-
-        let last_command_cleaned_up = re.replace(last_command, "");
-        last_command_cleaned_up.to_string()
+        let re = Regex::new(r": [0-9]*:[0-9];").unwrap();
+        re.replace(last_command, "").to_string()
     }
 }
 
