@@ -14,7 +14,7 @@ use crate::crow_commands::{CrowCommand, Id};
 
 /// A [ScoredCommand] contains a [CrowCommand] alongside scoring metadata and
 /// a list of matching indices.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct ScoredCommand {
     score: i64,
     indices: Vec<usize>,

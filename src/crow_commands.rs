@@ -11,7 +11,7 @@ use std::{
 // TODO maybe change this so that it uses the newtype pattern
 pub type Id = String;
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, PartialOrd)]
 pub struct CrowCommand {
     pub id: Id,
     pub command: String,
