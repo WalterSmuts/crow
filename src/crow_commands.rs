@@ -36,6 +36,7 @@ impl Display for CrowCommand {
     }
 }
 
+#[derive(PartialEq)]
 pub struct Commands(HashMap<Id, CrowCommand>);
 
 impl Commands {
@@ -99,7 +100,7 @@ impl Debug for Commands {
 
 /// Crow commands are a normalized view of the commands that are stored inside
 /// the crow_db.json file.
-#[derive(Debug, Default)]
+#[derive(Debug, Default, PartialEq)]
 pub struct CrowCommands {
     commands: Commands,
 
@@ -108,6 +109,13 @@ pub struct CrowCommands {
 }
 
 impl CrowCommands {
+    pub fn new(commands: Commands, command_ids: Vec<Id>) -> Self {
+        Self {
+            commands,
+            command_ids,
+        }
+    }
+
     /// Get a reference to the crow commands's commands.
     pub fn commands(&self) -> &Commands {
         &self.commands

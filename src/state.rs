@@ -235,3 +235,33 @@ impl State {
         self.db_file_path = db_file_path;
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::{
+        crow_commands::{Commands, CrowCommand, CrowCommands, Id},
+        crow_db::FilePath,
+    };
+
+    use super::State;
+
+    #[test]
+    fn initializes_with_correct_data() {
+        let file_path = FilePath::new(Some("./testdata"), Some("crow.json"));
+
+        let state = State::new(Some(file_path));
+
+        assert_eq!(state.input(), "");
+        assert_eq!(&**state.db_file_path(), "./testdata/crow.json");
+
+        let crow_commands = [CrowCommand {
+            id: "test_command_1".to_string(),
+            command: "echo 'hi from db'".to_string(),
+            description: "This is a test command".to_string(),
+        }];
+        let crow_command_ids: Vec<Id> = vec!["test_command_1".to_string()];
+        let expected = CrowCommands::new(Commands::normalize(&crow_commands), crow_command_ids);
+
+        assert_eq!(state.crow_commands(), &expected);
+    }
+}

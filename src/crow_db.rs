@@ -2,7 +2,9 @@
 
 use serde::{Deserialize, Serialize};
 use std::{
+    fmt::Display,
     fs::{create_dir_all, read_to_string, write},
+    ops::Deref,
     path::{Path, PathBuf},
 };
 
@@ -38,12 +40,26 @@ impl Commands {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct FilePath(PathBuf);
+
+impl Deref for FilePath {
+    type Target = str;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0.to_str().unwrap_or("")
+    }
+}
 
 impl Default for FilePath {
     fn default() -> Self {
         Self(Self::create_path_and_intermediate_dirs(None, None))
+    }
+}
+
+impl Display for FilePath {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", *self)
     }
 }
 
