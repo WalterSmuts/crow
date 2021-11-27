@@ -117,5 +117,18 @@ mod tests {
 
             assert_eq!(result, "echo \"Hi from test history\"");
         }
+
+        #[test]
+        fn correctly_cleans_up_zsh_commands() {
+            let shell = Shell::from_path("/bin/zsh".to_string()).unwrap();
+
+            // Note: the path is relative to the root dir of the repository, because
+            // this is where the cargo test command is invoked from!
+            let path = PathBuf::from("./testdata/");
+
+            let result = shell.read_last_history_command(path);
+
+            assert_eq!(result, "echo 'Hi from test zsh_history'");
+        }
     }
 }
