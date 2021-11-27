@@ -8,7 +8,7 @@ use crate::{
 };
 
 /// The [FuzzResult] contains [CrowCommands] with scoring metadata
-#[derive(Debug, Default)]
+#[derive(Debug, Default, PartialEq)]
 pub struct FuzzResult {
     commands: ScoredCommands,
     command_ids: Vec<Id>,

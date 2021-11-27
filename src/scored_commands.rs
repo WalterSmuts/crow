@@ -57,7 +57,7 @@ impl ScoredCommand {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct ScoredCommands(HashMap<Id, ScoredCommand>);
 
 impl Deref for ScoredCommands {

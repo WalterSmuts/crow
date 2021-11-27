@@ -109,7 +109,7 @@ pub struct CrowCommands {
 }
 
 impl CrowCommands {
-    pub fn new(commands: Commands, command_ids: Vec<Id>) -> Self {
+    pub fn _new(commands: Commands, command_ids: Vec<Id>) -> Self {
         Self {
             commands,
             command_ids,

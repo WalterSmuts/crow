@@ -238,9 +238,12 @@ impl State {
 
 #[cfg(test)]
 mod tests {
+
     use crate::{
         crow_commands::{Commands, CrowCommand, CrowCommands, Id},
         crow_db::FilePath,
+        fuzzy::FuzzResult,
+        scored_commands::{ScoredCommand, ScoredCommands},
     };
 
     use super::State;
@@ -254,14 +257,25 @@ mod tests {
         assert_eq!(state.input(), "");
         assert_eq!(&**state.db_file_path(), "./testdata/crow.json");
 
-        let crow_commands = [CrowCommand {
+        let crow_command = CrowCommand {
             id: "test_command_1".to_string(),
             command: "echo 'hi from db'".to_string(),
             description: "This is a test command".to_string(),
-        }];
+        };
+        let crow_commands = [crow_command.clone()];
         let crow_command_ids: Vec<Id> = vec!["test_command_1".to_string()];
-        let expected = CrowCommands::new(Commands::normalize(&crow_commands), crow_command_ids);
+        let expected = CrowCommands::_new(Commands::normalize(&crow_commands), crow_command_ids);
 
         assert_eq!(state.crow_commands(), &expected);
+
+        let scored_commands =
+            ScoredCommands::normalize(&[ScoredCommand::new(1, vec![], crow_command)]);
+        let expected = FuzzResult::new(scored_commands, vec!["test_command_1".to_string()]);
+
+        assert_eq!(state.fuzz_result(), &expected);
+
+        assert_eq!(state.detail_scroll_position(), 0);
+        assert_eq!(state.has_crow_commands(), true);
+        assert_eq!(state.command_list_state().selected().unwrap(), 0);
     }
 }
