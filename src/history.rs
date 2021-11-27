@@ -36,7 +36,7 @@ impl Shell {
     /// let zsh= Shell::Zsh;
     /// let hist_file_path = zsh.history_path(); // => "~/.zsh_history"
     /// ```
-    fn history_file(&self) -> &str {
+    fn history_file_name(&self) -> &str {
         match self {
             Self::Zsh => ".zsh_history",
             Self::Bash => ".bash_history",
@@ -46,7 +46,7 @@ impl Shell {
     /// Reads the users history file from the determined default shell and returns
     /// its content as lines.
     fn read_history_file(&self, mut base_dir: PathBuf) -> Vec<String> {
-        let file_name = self.history_file();
+        let file_name = self.history_file_name();
 
         base_dir.push(file_name);
 
@@ -81,7 +81,7 @@ impl Shell {
 
 #[cfg(test)]
 mod tests {
-    mod history_from_shell {
+    mod from_path {
         use crate::history::Shell;
 
         #[test]
@@ -97,6 +97,25 @@ mod tests {
         #[test]
         fn does_not_detect_others() {
             assert_eq!(Shell::from_path("/bin/fish".to_string()), None);
+        }
+    }
+
+    mod read_last_history_command {
+        use std::path::PathBuf;
+
+        use crate::history::Shell;
+
+        #[test]
+        fn returns_correct_command_from_history() {
+            let shell = Shell::from_path("/bin/bash".to_string()).unwrap();
+
+            // Note: the path is relative to the root dir of the repository, because
+            // this is where the cargo test command is invoked from!
+            let path = PathBuf::from("./testdata/");
+
+            let result = shell.read_last_history_command(path);
+
+            assert_eq!(result, "echo \"Hi from test history\"");
         }
     }
 }
